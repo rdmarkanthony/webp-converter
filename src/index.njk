@@ -43,15 +43,17 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
 
         {# results #}
         <div data-results hidden class="mt-10">
-            {# main action, the per-image downloads below stay secondary #}
-            <div class="flex flex-col gap-4 p-4 md:p-5 border border-theme-accent/30 rounded-3xl bg-theme-accent/5 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between">
-                <p data-summary class="text-sm text-theme-muted" aria-live="polite"></p>
-                <div class="flex items-center gap-2">
-                    <button data-clear type="button" class="btn h-12 px-5 text-sm text-theme-muted hover:text-theme-text">Clear</button>
-                    <button data-download-all type="button" class="btn btn-primary flex-1 h-12 px-6 shadow-lg shadow-theme-accent/25 sm:flex-none">
-                        <svg class="w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V16M12 16L7 11M12 16L17 11M4 20H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                        <span data-download-all-label>Download all</span>
-                    </button>
+            {# main action, the per-image downloads below stay secondary; sticks to the top while scrolling the list #}
+            <div class="sticky top-3 z-20 rounded-3xl bg-theme-bg/85 shadow-lg shadow-theme-accent/10 backdrop-blur-xl">
+                <div class="flex flex-col gap-4 p-4 md:p-5 border border-theme-accent/30 rounded-3xl bg-theme-accent/5 sm:flex-row sm:items-center sm:justify-between">
+                    <p data-summary class="text-sm text-theme-muted" aria-live="polite"></p>
+                    <div class="flex items-center gap-2">
+                        <button data-clear type="button" class="btn h-12 px-5 text-sm text-theme-muted hover:text-theme-text">Clear</button>
+                        <button data-download-all type="button" class="btn btn-primary flex-1 h-12 px-6 shadow-lg shadow-theme-accent/25 sm:flex-none">
+                            <svg class="w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4V16M12 16L7 11M12 16L17 11M4 20H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                            <span data-download-all-label>Download all</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             <ul data-list class="mt-4 grid gap-2"></ul>
