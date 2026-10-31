@@ -5,10 +5,10 @@ import { _background } from "./utils/_background";
 // matches --color-theme-bg in style.css
 const THEME_COLORS = { dark: "#0c0c0e", light: "#ffffff" };
 
-class _projName {
+class _webpConverterApp {
     constructor(props) {
-        if (window._projName) return;
-        window._projName = this;
+        if (window._webpConverterApp) return;
+        window._webpConverterApp = this;
 
         this.debug = props.debug || false;
 
@@ -32,7 +32,7 @@ class _projName {
         document.querySelectorAll("[data-background]").forEach((canvas) => new _background(canvas));
         document.querySelectorAll("[data-theme-toggle]").forEach((button) => button.addEventListener("click", () => this.toggleTheme()));
 
-        if (this.debug) console.log("_projName", this);
+        if (this.debug) console.log("_webpConverterApp", this);
     }
 
     // the inline script in base.njk reads the same key before paint
@@ -58,5 +58,5 @@ class _projName {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    new _projName({ debug: false });
+    new _webpConverterApp({ debug: false });
 });
