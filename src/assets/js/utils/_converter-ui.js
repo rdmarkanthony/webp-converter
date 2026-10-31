@@ -4,6 +4,9 @@ import { _webp } from "./_webp-converter";
 const NEEDS_CONVERT = ["ready", "stale"];
 // stale items still have their previous result to download
 const HAS_RESULT = ["done", "stale"];
+// when the webp is bigger than the original, retry this much lower, but never below MIN_QUALITY
+const QUALITY_STEP = 15;
+const MIN_QUALITY = 50;
 
 export class _converterUI {
     constructor(root) {
@@ -91,8 +94,9 @@ export class _converterUI {
         this.render();
     }
 
+    // 1-100, like the slider
     get quality() {
-        return Number(this.el.quality.value) / 100;
+        return Number(this.el.quality.value);
     }
 
     add(fileList) {
@@ -109,7 +113,6 @@ export class _converterUI {
 
             li.querySelector("[data-thumb]").src = item.thumbUrl;
             li.querySelector("[data-name]").textContent = file.name || "Pasted image";
-            li.querySelector("[data-download]").download = item.name;
             li.querySelector("[data-remove]").addEventListener("click", () => this.remove(item));
 
             this.items.push(item);
@@ -123,7 +126,7 @@ export class _converterUI {
     remove(item) {
         item.removed = true;
         URL.revokeObjectURL(item.thumbUrl);
-        if (item.url) URL.revokeObjectURL(item.url);
+        if (item.webp) URL.revokeObjectURL(item.webp.url);
         item.li.remove();
         this.items = this.items.filter((i) => i !== item);
         this.render();
@@ -142,10 +145,22 @@ export class _converterUI {
             this.setStatus(item, "converting");
             this.render();
             try {
-                const { blob, width, height } = await _webp.convert(item.file, { quality });
+                const { blob, width, height, quality: used } = await this.encodeSmaller(item.file, quality);
                 if (item.removed) continue;
-                if (item.url) URL.revokeObjectURL(item.url);
-                Object.assign(item, { blob, url: URL.createObjectURL(blob), width, height });
+                if (item.webp) URL.revokeObjectURL(item.webp.url);
+
+                // what the download buttons hand out: the webp, or the original when it's still smaller
+                const keptOriginal = blob.size >= item.file.size;
+                item.webp = { blob, url: URL.createObjectURL(blob) };
+                Object.assign(item, {
+                    width,
+                    height,
+                    keptOriginal,
+                    loweredQuality: used !== quality ? used : null,
+                    blob: keptOriginal ? item.file : blob,
+                    url: keptOriginal ? item.thumbUrl : item.webp.url,
+                    name: keptOriginal ? item.file.name || "image" : _webp.rename(item.file.name || "image"),
+                });
                 // the slider moved while this one was converting
                 this.setStatus(item, quality === this.quality ? "done" : "stale");
             } catch (err) {
@@ -159,12 +174,24 @@ export class _converterUI {
         this.render();
     }
 
+    // a bigger webp gets retried at lower quality before giving up
+    async encodeSmaller(file, quality) {
+        let result = await _webp.convert(file, { quality: quality / 100 });
+        let used = quality;
+        while (result.blob.size >= file.size && used > MIN_QUALITY) {
+            used = Math.max(used - QUALITY_STEP, MIN_QUALITY);
+            result = await _webp.convert(file, { quality: used / 100 });
+        }
+        return { ...result, quality: used };
+    }
+
     setStatus(item, status) {
         item.status = status;
 
         const meta = item.li.querySelector("[data-meta]");
         const badge = item.li.querySelector("[data-badge]");
         const link = item.li.querySelector("[data-download]");
+        const webpLink = item.li.querySelector("[data-download-webp]");
         const size = _webp.formatBytes(item.file.size);
 
         meta.classList.toggle("text-red-400", status === "error");
@@ -175,19 +202,32 @@ export class _converterUI {
         if (status === "error") meta.textContent = item.error;
         if (status === "stale") meta.textContent = `${size} → ${_webp.formatBytes(item.blob.size)} · Updating…`;
 
+        if (status === "done" && item.keptOriginal) {
+            meta.textContent = `${size} · WebP would be ${_webp.formatBytes(item.webp.blob.size)}, keeping the original`;
+            badge.textContent = "Original";
+        } else if (status === "done") {
+            const saved = Math.round((1 - item.blob.size / item.file.size) * 100);
+            meta.textContent = `${size} → ${_webp.formatBytes(item.blob.size)} · ${item.width}×${item.height}` + (item.loweredQuality ? ` · quality ${item.loweredQuality}` : "");
+            badge.textContent = `−${saved}%`;
+        }
         if (status === "done") {
-            const diff = Math.round(((item.blob.size - item.file.size) / item.file.size) * 100);
-            meta.textContent = `${size} → ${_webp.formatBytes(item.blob.size)} · ${item.width}×${item.height}`;
-            badge.textContent = diff <= 0 ? `−${Math.abs(diff)}%` : `+${diff}%`;
-            badge.classList.toggle("bg-theme-accent/15", diff <= 0);
-            badge.classList.toggle("text-theme-accent", diff <= 0);
-            badge.classList.toggle("bg-amber-500/15", diff > 0);
-            badge.classList.toggle("text-amber-500", diff > 0);
+            badge.classList.toggle("bg-theme-accent/15", !item.keptOriginal);
+            badge.classList.toggle("text-theme-accent", !item.keptOriginal);
+            badge.classList.toggle("bg-theme-line", item.keptOriginal);
+            badge.classList.toggle("text-theme-muted", item.keptOriginal);
+        }
+
+        // the webp is still there if the user needs that format
+        webpLink.hidden = !(status === "done" && item.keptOriginal);
+        if (!webpLink.hidden) {
+            webpLink.href = item.webp.url;
+            webpLink.download = _webp.rename(item.file.name || "image");
         }
 
         // keep the last result downloadable until it's replaced
         if (item.blob && status !== "error") {
             link.href = item.url;
+            link.download = item.name;
             link.removeAttribute("aria-disabled");
         } else {
             link.removeAttribute("href");
@@ -219,6 +259,7 @@ export class _converterUI {
 
         this.el.downloadAll.disabled = true;
         try {
+            // originals that beat their webp go in as they are
             const zip = await _webp.zip(done.map(({ name, blob }) => ({ name, blob })));
             _webp.download(zip, "webp-images.zip");
         } finally {

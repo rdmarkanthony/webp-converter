@@ -99,8 +99,8 @@ export const _webp = {
         for (const { name, blob } of entries) {
             // de-duplicate names: photo.webp, photo-1.webp, ...
             let unique = name;
-            for (let n = 1; unique in files; n++) unique = name.replace(/\.webp$/, `-${n}.webp`);
-            // webp is already compressed, so store without deflate
+            for (let n = 1; unique in files; n++) unique = name.replace(/(\.[^./\\]*)?$/, `-${n}$1`);
+            // images are already compressed, so store without deflate
             files[unique] = [new Uint8Array(await blob.arrayBuffer()), { level: 0 }];
         }
         return new Blob([zipSync(files)], { type: "application/zip" });
