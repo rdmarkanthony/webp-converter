@@ -2,7 +2,7 @@
 {%- from "templates/footer.njk" import footer -%}
 
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Convert images to WebP. Smaller files, same look. Nothing is uploaded." />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="theme-color" content="#0c0c0e" />
+    <meta name="theme-color" content="#ffffff" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,11 +31,11 @@
 
     <script>
         try {
-            const saved = localStorage.getItem("theme");
-            document.documentElement.dataset.theme = saved === "light" ? "light" : "dark";
-        } catch {
-            document.documentElement.dataset.theme = "dark";
-        }
+            if (localStorage.getItem("theme") === "dark") {
+                document.documentElement.dataset.theme = "dark";
+                document.querySelector('meta[name="theme-color"]').setAttribute("content", "#0c0c0e");
+            }
+        } catch {}
     </script>
 
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
