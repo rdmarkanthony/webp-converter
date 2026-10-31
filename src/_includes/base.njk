@@ -10,9 +10,20 @@
     <title>{{ title | default('Home') | safe }}</title>
     {% if pageDescription -%}
     <meta name="description" content="{{ pageDescription }}" />
+    {%- endif %}
+    <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
+
+    {# link previews (Messenger, Slack, WhatsApp, X...), banner source is tools/og-image.html #}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="{{ site.name }}" />
     <meta property="og:title" content="{{ title }}" />
     <meta property="og:description" content="{{ pageDescription }}" />
-    {%- endif %}
+    <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+    <meta property="og:image" content="{{ site.url }}/assets/img/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Convert images to WebP. Smaller files, same look. Nothing is uploaded." />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#0c0c0e" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
