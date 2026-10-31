@@ -23,7 +23,8 @@
         // before paint, avoids a theme flash
         try {
             const saved = localStorage.getItem("theme");
-            document.documentElement.dataset.theme = saved === "light" || saved === "dark" ? saved : matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+            // dark unless the visitor picked light with the toggle
+            document.documentElement.dataset.theme = saved === "light" ? "light" : "dark";
         } catch {
             document.documentElement.dataset.theme = "dark";
         }
