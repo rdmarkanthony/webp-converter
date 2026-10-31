@@ -1,0 +1,55 @@
+[debug] [2026-10-31T07:54:51.520Z] ----------------------------------------------------------------------
+[debug] [2026-10-31T07:54:51.522Z] Command:       /Users/markanthonyrecto/.nvm/versions/node/v22.21.1/bin/node /Users/markanthonyrecto/.nvm/versions/node/v22.21.1/bin/firebase serve --only hosting --port 5055
+[debug] [2026-10-31T07:54:51.522Z] CLI Version:   15.15.0
+[debug] [2026-10-31T07:54:51.522Z] Platform:      darwin
+[debug] [2026-10-31T07:54:51.522Z] Node Version:  v22.21.1
+[debug] [2026-10-31T07:54:51.522Z] Time:          Sat Oct 31 2026 15:54:51 GMT+0800 (Philippine Standard Time)
+[debug] [2026-10-31T07:54:51.522Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-10-31T07:54:52.601Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-10-31T07:54:52.601Z] > authorizing via signed-in user (markanthonyrecto@gmail.com)
+[debug] [2026-10-31T07:54:52.602Z] [iam] checking project webp-converter-61931 for permissions ["firebase.projects.get"]
+[debug] [2026-10-31T07:54:52.604Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:52.604Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:52.604Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931:testIamPermissions [none]
+[debug] [2026-10-31T07:54:52.605Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931:testIamPermissions  x-goog-user-project=webp-converter-61931
+[debug] [2026-10-31T07:54:52.605Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2026-10-31T07:54:53.896Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931:testIamPermissions 200
+[debug] [2026-10-31T07:54:53.896Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931:testIamPermissions {"permissions":["firebase.projects.get"]}
+[debug] [2026-10-31T07:54:53.897Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:53.897Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:53.897Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/webp-converter-61931/services/cloudresourcemanager.googleapis.com [none]
+[debug] [2026-10-31T07:54:53.897Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/webp-converter-61931/services/cloudresourcemanager.googleapis.com  x-goog-user-project=webp-converter-61931
+[debug] [2026-10-31T07:54:55.263Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/webp-converter-61931/services/cloudresourcemanager.googleapis.com 200
+[debug] [2026-10-31T07:54:55.263Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/webp-converter-61931/services/cloudresourcemanager.googleapis.com [omitted]
+[debug] [2026-10-31T07:54:55.275Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:55.275Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:55.275Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931 [none]
+[debug] [2026-10-31T07:54:55.570Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931 200
+[debug] [2026-10-31T07:54:55.570Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/webp-converter-61931 {"projectNumber":"719911377592","projectId":"webp-converter-61931","lifecycleState":"ACTIVE","name":"webp-converter","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-10-31T07:14:49.562Z"}
+[debug] [2026-10-31T07:54:55.572Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:55.572Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:55.572Z] >>> [apiv2][query] GET https://firebasehosting.googleapis.com/v1beta1/projects/webp-converter-61931/sites 
+[debug] [2026-10-31T07:54:56.626Z] <<< [apiv2][status] GET https://firebasehosting.googleapis.com/v1beta1/projects/webp-converter-61931/sites 200
+[debug] [2026-10-31T07:54:56.627Z] <<< [apiv2][body] GET https://firebasehosting.googleapis.com/v1beta1/projects/webp-converter-61931/sites {"sites":[{"name":"projects/webp-converter-61931/sites/webp-converter-61931","defaultUrl":"https://webp-converter-61931.web.app","type":"DEFAULT_SITE"}]}
+[debug] [2026-10-31T07:54:56.627Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:56.627Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:56.628Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/webp-converter-61931/webApps/-/config [none]
+[debug] [2026-10-31T07:54:57.625Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/webp-converter-61931/webApps/-/config 200
+[debug] [2026-10-31T07:54:57.625Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/webp-converter-61931/webApps/-/config {"projectId":"webp-converter-61931","storageBucket":"webp-converter-61931.firebasestorage.app","apiKey":"AIzaSyDwpIzF-_yAQSxTouqsTDXJFNyZEKxrhSc","authDomain":"webp-converter-61931.firebaseapp.com","messagingSenderId":"719911377592","projectNumber":"719911377592","version":"2"}
+[debug] [2026-10-31T07:54:57.634Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:57.634Z] Checked if tokens are valid: true, expires at: 1793435172170
+[debug] [2026-10-31T07:54:57.634Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/webp-converter-61931 [none]
+[debug] [2026-10-31T07:54:58.126Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/webp-converter-61931 200
+[debug] [2026-10-31T07:54:58.126Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/webp-converter-61931 {"projectId":"webp-converter-61931","projectNumber":"719911377592","displayName":"webp-converter","name":"projects/webp-converter-61931","resources":{"hostingSite":"webp-converter-61931"},"state":"ACTIVE","labels":{"firebase":"enabled"},"etag":"1_4bf1a53c-40cc-4887-b482-5e69ee5ad8ea"}
+[info] i  hosting[webp-converter-61931]: Serving hosting files from: public {"metadata":{"emulator":{"name":"hosting"},"message":"Serving hosting files from: public"}}
+[info] ✔  hosting[webp-converter-61931]: Local server: http://localhost:5055 {"metadata":{"emulator":{"name":"hosting"},"message":"Local server: http://localhost:5055"}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET / HTTP/1.1" 200 11240 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET / HTTP/1.1\" 200 11240 \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET / HTTP/1.1" 200 11240 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET / HTTP/1.1\" 200 11240 \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET /index.html HTTP/1.1" 301 - "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET /index.html HTTP/1.1\" 301 - \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET /assets/css/style.css?v=x HTTP/1.1" 200 25182 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET /assets/css/style.css?v=x HTTP/1.1\" 200 25182 \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET /assets/js/script.js?v=x HTTP/1.1" 200 602443 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET /assets/js/script.js?v=x HTTP/1.1\" 200 602443 \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET /assets/wasm/webp_enc_simd.wasm HTTP/1.1" 200 345584 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET /assets/wasm/webp_enc_simd.wasm HTTP/1.1\" 200 345584 \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET /assets/img/og-image.png HTTP/1.1" 200 158191 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET /assets/img/og-image.png HTTP/1.1\" 200 158191 \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET /favicon.ico HTTP/1.1" 200 3627 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET /favicon.ico HTTP/1.1\" 200 3627 \"-\" \"curl/8.7.1\""}}
+[info] i  hosting: ::1 - - [31/Oct/2026:07:54:58 +0000] "GET /site.webmanifest HTTP/1.1" 200 364 "-" "curl/8.7.1" {"metadata":{"emulator":{"name":"hosting"},"message":"::1 - - [31/Oct/2026:07:54:58 +0000] \"GET /site.webmanifest HTTP/1.1\" 200 364 \"-\" \"curl/8.7.1\""}}

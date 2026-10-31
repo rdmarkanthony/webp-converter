@@ -28,7 +28,7 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
                     <span class="text-theme-accent underline decoration-1 underline-offset-4">browse</span>
                 </span>
                 <span class="text-sm text-theme-muted">JPG, PNG, GIF, BMP, AVIF, SVG · or paste from clipboard</span>
-                <input data-file-input type="file" accept="image/*" multiple class="sr-only" />
+                <input data-file-input type="file" accept="image/*,.heic,.heif" multiple class="sr-only" />
             </label>
 
             {# settings, images convert as soon as they're added or the quality changes #}
@@ -39,7 +39,7 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
             </div>
         </div>
 
-        <p data-support-warning hidden class="mt-4 px-5 py-3 border border-amber-500/30 rounded-2xl bg-amber-500/10 text-sm text-amber-600 light:text-amber-700">Your browser can't encode WebP images. Please use a recent version of Chrome, Edge or Firefox.</p>
+        <p data-support-warning hidden class="mt-4 px-5 py-3 border border-amber-500/30 rounded-2xl bg-amber-500/10 text-sm text-amber-600 light:text-amber-700">Your browser is too old to convert images to WebP. Please update it, or use a recent version of Chrome, Edge, Firefox or Safari.</p>
 
         {# results #}
         <div data-results hidden class="mt-10">
@@ -65,6 +65,7 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
                 <div class="min-w-0 flex-1">
                     <p data-name class="truncate text-sm font-medium"></p>
                     <p data-meta class="mt-0.5 text-xs text-theme-muted"></p>
+                    <a data-download-webp hidden class="text-xs text-theme-accent underline underline-offset-2 hover:text-theme-accent-hover">Download WebP anyway</a>
                 </div>
                 <span data-badge class="hidden shrink-0 px-2.5 py-1 rounded-full text-xs font-medium tabular-nums"></span>
                 <a data-download class="btn btn-outline shrink-0 h-9 px-4 text-sm aria-disabled:opacity-30 aria-disabled:pointer-events-none" aria-disabled="true">Download</a>

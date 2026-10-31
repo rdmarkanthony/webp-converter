@@ -13,6 +13,7 @@
         "build:eleventy": "eleventy",
         "build:css": "pnpm dlx @tailwindcss/cli -i ./src/assets/css/style.css -o ./public/assets/css/style.css --minify",
         "build:js": "node esbuild.config.js",
+        "og": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=5000 --screenshot=\"$PWD/src/assets/img/og-image.png\" \"file://$PWD/tools/og-image.html\"",
         "test": "echo \"Error: no test specified\" && exit 1",
         "format": "prettier --write .",
         "preinstall": "npx only-allow pnpm"
@@ -23,6 +24,7 @@
     "packageManager": "pnpm@10.28.2",
     "dependencies": {
         "@11ty/eleventy": "^3.1.2",
+        "@jsquash/webp": "^1.5.0",
         "fflate": "^0.8.3",
         "three": "^0.187.0"
     },

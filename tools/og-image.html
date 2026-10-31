@@ -1,0 +1,138 @@
+<!doctype html>
+<!-- link preview banner, render with: pnpm og -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600&family=DM+Sans:wght@400;500&display=block" />
+    <style>
+        :root {
+            --bg: #0c0c0e;
+            --surface: #151518;
+            --line: #2a2a30;
+            --text: #f2f1ec;
+            --muted: #8d8d96;
+            --accent: #5b8fe0;
+        }
+        * {
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body {
+            width: 1200px;
+            height: 630px;
+            overflow: hidden;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "DM Sans", sans-serif;
+        }
+        /* same pixel tiles as the site background */
+        .tiles {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: repeat(40, 30px);
+            grid-auto-rows: 30px;
+        }
+        .tiles span {
+            place-self: center;
+            border-radius: 22%;
+            background: var(--accent);
+        }
+        /* keep the text side calm */
+        .shade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, var(--bg) 30%, color-mix(in srgb, var(--bg) 70%, transparent) 62%, transparent 100%);
+        }
+        .content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 64px 72px;
+        }
+        .logo {
+            font-family: "Bricolage Grotesque", sans-serif;
+            font-weight: 600;
+            font-size: 36px;
+            letter-spacing: -0.02em;
+        }
+        .accent {
+            color: var(--accent);
+        }
+        h1 {
+            margin-top: auto;
+            font-family: "Bricolage Grotesque", sans-serif;
+            font-weight: 600;
+            font-size: 96px;
+            line-height: 1;
+            letter-spacing: -0.035em;
+        }
+        p {
+            margin-top: 24px;
+            font-size: 30px;
+            color: var(--muted);
+        }
+        .result {
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            align-self: flex-start;
+            margin-top: 40px;
+            padding: 16px 16px 16px 24px;
+            border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+            font-size: 26px;
+            font-weight: 500;
+        }
+        .result b {
+            padding: 6px 16px;
+            border-radius: 999px;
+            background: var(--accent);
+            color: var(--bg);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="tiles"></div>
+    <div class="shade"></div>
+    <div class="content">
+        <div class="logo">webp<span class="accent">.</span></div>
+        <h1>Convert images<br />to <span class="accent">WebP</span>.</h1>
+        <p>Smaller files, same look. Nothing is uploaded.</p>
+        <div class="result">1.2 MB → 335 KB <b>73% smaller</b></div>
+    </div>
+
+    <script>
+        // deterministic noise so every render matches
+        const hash = (x, y) => {
+            const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
+            return n - Math.floor(n);
+        };
+        const smooth = (x, y) => {
+            const ix = Math.floor(x);
+            const iy = Math.floor(y);
+            const fx = x - ix;
+            const fy = y - iy;
+            const ux = fx * fx * (3 - 2 * fx);
+            const uy = fy * fy * (3 - 2 * fy);
+            const a = hash(ix, iy) + (hash(ix + 1, iy) - hash(ix, iy)) * ux;
+            const b = hash(ix, iy + 1) + (hash(ix + 1, iy + 1) - hash(ix, iy + 1)) * ux;
+            return a + (b - a) * uy;
+        };
+
+        const tiles = document.querySelector(".tiles");
+        for (let y = 0; y < 21; y++) {
+            for (let x = 0; x < 40; x++) {
+                const lit = Math.min(1, Math.max(0, (smooth(x * 0.22, y * 0.22) + (hash(x, y) - 0.5) * 0.25 - 0.4) / 0.5));
+                const size = 4 + lit * 21;
+                const tile = document.createElement("span");
+                tile.style.cssText = `width:${size}px;height:${size}px;opacity:${0.06 + lit * 0.5}`;
+                tiles.append(tile);
+            }
+        }
+    </script>
+</body>
+</html>

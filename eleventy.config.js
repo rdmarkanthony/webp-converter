@@ -20,6 +20,8 @@ export default function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/assets/favicon");
     eleventyConfig.addPassthroughCopy("src/favicon.ico");
     eleventyConfig.addPassthroughCopy("src/site.webmanifest");
+    // webp encoder for browsers that can't encode webp themselves (Safari / iOS)
+    eleventyConfig.addPassthroughCopy({ "node_modules/@jsquash/webp/codec/enc/*.wasm": "assets/wasm" });
     // eleventyConfig.addPassthroughCopy("src/assets/video");
     // eleventyConfig.addPassthroughCopy("src/assets/data");
 

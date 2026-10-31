@@ -9,7 +9,7 @@ Built on [eleventy-njk-tailwind-template](https://github.com/rdmarkanthony/eleve
 - Drag & drop, file picker, or paste from clipboard; batch conversion
 - Quality slider and optional max width / height (aspect ratio kept)
 - Per-file size comparison, single download, or download all as a ZIP
-- Conversion uses the browser's native canvas WebP encoder (Chrome, Edge, Firefox)
+- Conversion uses the browser's native canvas WebP encoder (Chrome, Edge, Firefox). Safari and every iOS browser can't encode WebP, so they fall back to libwebp compiled to WebAssembly ([@jsquash/webp](https://github.com/jamsinclair/jSquash)), served from `/assets/wasm/` and only downloaded when needed
 
 ## Usage
 
@@ -26,5 +26,5 @@ pnpm build   # production build to public/
 ## Source
 
 - `src/index.njk` — page markup
-- `src/assets/js/utils/_webp-converter.js` — decode, resize, encode, zip helpers
+- `src/assets/js/utils/_webp-converter.js` — decode, encode (canvas or wasm), zip helpers
 - `src/assets/js/utils/_converter-ui.js` — drop zone, settings, results list
