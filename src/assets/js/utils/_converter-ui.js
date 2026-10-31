@@ -100,7 +100,7 @@ export class _converterUI {
     }
 
     add(fileList) {
-        const files = [...fileList].filter((file) => file.type.startsWith("image/"));
+        const files = [...fileList].filter((file) => _webp.isImage(file));
         files.forEach((file) => {
             const li = this.el.template.content.firstElementChild.cloneNode(true);
             const item = {
@@ -111,7 +111,20 @@ export class _converterUI {
                 thumbUrl: URL.createObjectURL(file),
             };
 
-            li.querySelector("[data-thumb]").src = item.thumbUrl;
+            const thumb = li.querySelector("[data-thumb]");
+            // e.g. heic outside Safari: a tile with the file type instead of a broken image icon
+            thumb.addEventListener(
+                "error",
+                () => {
+                    const tile = Object.assign(document.createElement("span"), {
+                        className: `${thumb.className} flex items-center justify-center text-xs font-medium uppercase text-theme-muted`,
+                        textContent: file.name.split(".").pop().slice(0, 4) || "?",
+                    });
+                    thumb.replaceWith(tile);
+                },
+                { once: true }
+            );
+            thumb.src = item.thumbUrl;
             li.querySelector("[data-name]").textContent = file.name || "Pasted image";
             li.querySelector("[data-remove]").addEventListener("click", () => this.remove(item));
 
@@ -195,6 +208,8 @@ export class _converterUI {
         const size = _webp.formatBytes(item.file.size);
 
         meta.classList.toggle("text-red-400", status === "error");
+        meta.classList.toggle("light:text-red-600", status === "error");
+        meta.classList.toggle("text-theme-muted", status !== "error");
         badge.classList.toggle("sm:inline-block", HAS_RESULT.includes(status));
 
         if (status === "ready") meta.textContent = `${size} · Waiting…`;

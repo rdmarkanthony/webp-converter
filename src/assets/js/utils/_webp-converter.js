@@ -27,6 +27,16 @@ export const _webp = {
         return this.wasm.then(() => encodeWasm(imageData, { quality: Math.round(quality * 100) }));
     },
 
+    // iPhone photos; browsers often leave file.type empty for these
+    isHeic(file) {
+        return /^image\/hei[cf]/.test(file.type) || /\.hei[cf]$/i.test(file.name);
+    },
+
+    // what the list accepts: anything the browser calls an image, plus heic so it can explain itself
+    isImage(file) {
+        return file.type.startsWith("image/") || this.isHeic(file);
+    },
+
     async decode(file) {
         // createImageBitmap honours EXIF orientation but can't read SVG in every browser
         if (file.type !== "image/svg+xml" && "createImageBitmap" in window) {
@@ -44,6 +54,10 @@ export const _webp = {
             img.src = url;
             await img.decode();
             return img;
+        } catch (e) {
+            // only Safari can read heic
+            if (this.isHeic(file)) throw new Error("This browser can't open iPhone HEIC photos. Try Safari, or save the photo as JPG first.");
+            throw new Error("Couldn't read this image. The file may be damaged or in an unsupported format.");
         } finally {
             URL.revokeObjectURL(url);
         }
