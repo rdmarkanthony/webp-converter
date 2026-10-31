@@ -21,7 +21,7 @@
     --color-theme-line: #2a2a30;
     --color-theme-text: #f2f1ec;
     --color-theme-muted: #8d8d96;
-    /* the same in both themes */
+    /* light uses a deeper blue, see below */
     --color-theme-accent: #5b8fe0;
     --color-theme-accent-hover: #80aaee;
     /* text on top of the accent */
@@ -38,12 +38,16 @@
         color-scheme: dark;
     }
 
+    /* white and blue */
     :root[data-theme="light"] {
-        --color-theme-bg: #f5f4ef;
+        --color-theme-bg: #ffffff;
         --color-theme-surface: #ffffff;
-        --color-theme-line: #dddbd2;
-        --color-theme-text: #111113;
-        --color-theme-muted: #65656d;
+        --color-theme-line: #dbe5f5;
+        --color-theme-text: #0d1b3a;
+        --color-theme-muted: #5a6784;
+        --color-theme-accent: #2563eb;
+        --color-theme-accent-hover: #1d4fd0;
+        --color-theme-accent-ink: #ffffff;
         color-scheme: light;
     }
 
@@ -85,25 +89,6 @@
 
 @utility btn-outline {
     @apply border border-theme-line text-theme-text hover:border-theme-accent hover:text-theme-accent;
-}
-
-:root {
-    /* the svg noise tile is tiny so it costs nothing */
-    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* film grain over the whole page */
-.grain {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    pointer-events: none;
-    opacity: 0.05;
-    background-image: var(--noise);
-}
-
-:root[data-theme="light"] .grain {
-    opacity: 0.08;
 }
 
 /* range slider in the accent colour */

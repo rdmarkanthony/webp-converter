@@ -3,7 +3,7 @@ import { _converterUI } from "./utils/_converter-ui";
 import { _background } from "./utils/_background";
 
 // matches --color-theme-bg in style.css
-const THEME_COLORS = { dark: "#0c0c0e", light: "#f5f4ef" };
+const THEME_COLORS = { dark: "#0c0c0e", light: "#ffffff" };
 
 class _projName {
     constructor(props) {

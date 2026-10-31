@@ -2,7 +2,7 @@ import { Mesh, OrthographicCamera, PlaneGeometry, Scene, ShaderMaterial, Vector2
 
 // pixel grid background: tiles breathe with noise, light up around the pointer and ripple while converting
 const CELL = { mobile: 22, desktop: 30 };
-const STRENGTH = { dark: 1, light: 0.7 };
+const STRENGTH = { dark: 1, light: 1.3 };
 const MAX_PIXEL_RATIO = 1.5;
 const THEME_FADE = 400;
 // how quickly the glow catches up with the pointer, per frame at 60fps
