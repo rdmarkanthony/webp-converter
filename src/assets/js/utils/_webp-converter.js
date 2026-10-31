@@ -32,15 +32,11 @@ export const _webp = {
         }
     },
 
-    async convert(file, { quality = 0.8, maxWidth = 0, maxHeight = 0 } = {}) {
+    async convert(file, { quality = 0.8 } = {}) {
         const source = await this.decode(file);
-        const srcW = source.naturalWidth || source.width;
-        const srcH = source.naturalHeight || source.height;
-        if (!srcW || !srcH) throw new Error("Could not read image dimensions");
-
-        const scale = Math.min(1, maxWidth ? maxWidth / srcW : 1, maxHeight ? maxHeight / srcH : 1);
-        const width = Math.max(1, Math.round(srcW * scale));
-        const height = Math.max(1, Math.round(srcH * scale));
+        const width = source.naturalWidth || source.width;
+        const height = source.naturalHeight || source.height;
+        if (!width || !height) throw new Error("Could not read image dimensions");
 
         const canvas = document.createElement("canvas");
         canvas.width = width;

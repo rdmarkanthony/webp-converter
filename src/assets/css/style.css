@@ -2,6 +2,9 @@
 
 @import "./components/variables.css";
 
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+/* dark is the default, light overrides the same tokens below (matches anthony-portfolio) */
 @theme {
     --breakpoint-xxs: 0px;
     --breakpoint-xs: 320px;
@@ -12,10 +15,112 @@
     --breakpoint-2xl: 1240px;
     --breakpoint-3xl: 1440px;
     --breakpoint-4xl: 1920px;
+
+    --color-theme-bg: #0c0c0e;
+    --color-theme-surface: #151518;
+    --color-theme-line: #2a2a30;
+    --color-theme-text: #f2f1ec;
+    --color-theme-muted: #8d8d96;
+    /* the same in both themes */
+    --color-theme-accent: #5b8fe0;
+    --color-theme-accent-hover: #80aaee;
+    /* text on top of the accent */
+    --color-theme-accent-ink: #0c0c0e;
+
+    --font-sans: "DM Sans", Arial, Helvetica, sans-serif;
+    --font-display: "Bricolage Grotesque", Arial, Helvetica, sans-serif;
+
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
+    :root {
+        color-scheme: dark;
+    }
+
+    :root[data-theme="light"] {
+        --color-theme-bg: #f5f4ef;
+        --color-theme-surface: #ffffff;
+        --color-theme-line: #dddbd2;
+        --color-theme-text: #111113;
+        --color-theme-muted: #65656d;
+        color-scheme: light;
+    }
+
     body {
-        @apply bg-slate-50 text-slate-900 antialiased;
+        @apply bg-theme-bg text-theme-text font-sans;
+        isolation: isolate;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition:
+            background-color 0.4s,
+            color 0.4s;
+    }
+
+    ::selection {
+        @apply bg-theme-accent text-theme-accent-ink;
+    }
+
+    button {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+@utility container-1 {
+    width: calc(100% - 2rem);
+    max-width: 56rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* pill buttons, same as the portfolio's buttonClasses() */
+@utility btn {
+    @apply relative inline-flex items-center justify-center gap-2 h-12 px-6 rounded-full font-medium text-base cursor-pointer outline-none transition-[background-color,border-color,color,opacity] duration-300 focus-visible:ring-2 focus-visible:ring-theme-accent disabled:opacity-40 disabled:cursor-not-allowed;
+}
+
+@utility btn-primary {
+    @apply bg-theme-accent text-theme-accent-ink hover:bg-theme-accent-hover;
+}
+
+@utility btn-outline {
+    @apply border border-theme-line text-theme-text hover:border-theme-accent hover:text-theme-accent;
+}
+
+:root {
+    /* the svg noise tile is tiny so it costs nothing */
+    --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* film grain over the whole page */
+.grain {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: var(--noise);
+}
+
+:root[data-theme="light"] .grain {
+    opacity: 0.08;
+}
+
+/* range slider in the accent colour */
+.range {
+    @apply w-full h-1.5 appearance-none rounded-full bg-theme-line cursor-pointer outline-none;
+    background-image: linear-gradient(var(--color-theme-accent), var(--color-theme-accent));
+    background-size: var(--fill, 80%) 100%;
+    background-repeat: no-repeat;
+
+    &::-webkit-slider-thumb {
+        @apply appearance-none size-5 rounded-full bg-theme-text border-4 border-theme-accent transition-transform duration-300;
+    }
+    &::-moz-range-thumb {
+        @apply size-5 rounded-full bg-theme-text border-4 border-theme-accent;
+    }
+    &:hover::-webkit-slider-thumb,
+    &:focus-visible::-webkit-slider-thumb {
+        @apply scale-115;
     }
 }
