@@ -6,17 +6,16 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
 
 <section class="pt-2 pb-6 md:pt-6 md:pb-8">
     <div class="container-1">
-        <h1 class="text-balance font-display font-semibold text-[2rem] md:text-5xl leading-[1.05] tracking-[-0.035em]">
+        <h1 data-bg-quiet class="text-balance font-display font-semibold text-[2rem] md:text-5xl leading-[1.05] tracking-[-0.035em]">
             Convert images to <span class="text-theme-accent">WebP</span>.
         </h1>
-        <p class="mt-2 text-base md:text-lg text-theme-muted">Smaller files, same look. Runs in your browser, nothing is uploaded.</p>
+        <p data-bg-quiet class="mt-2 text-base md:text-lg text-theme-muted">Smaller files, same look. Runs in your browser, nothing is uploaded.</p>
     </div>
 </section>
 
 <section class="pb-20" data-converter>
     <div class="container-1">
         <div class="p-3 md:p-4 border border-theme-line rounded-3xl bg-theme-surface/60 backdrop-blur-xl">
-            {# drop zone #}
             <label data-dropzone class="group flex flex-col items-center justify-center gap-3 px-6 py-10 md:py-16 border border-dashed border-theme-line rounded-2xl text-center cursor-pointer transition-colors duration-300 hover:border-theme-accent data-[dragging]:border-theme-accent data-[dragging]:bg-theme-accent/10 focus-within:border-theme-accent">
                 <span class="flex items-center justify-center size-14 rounded-full bg-theme-accent/15 text-theme-accent transition-transform duration-500 ease-out-expo group-hover:-translate-y-1">
                     <svg class="w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -31,7 +30,6 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
                 <input data-file-input type="file" accept="image/*,.heic,.heif" multiple class="sr-only" />
             </label>
 
-            {# settings, images convert as soon as they're added or the quality changes #}
             <div class="flex items-center gap-4 px-2 pt-5 pb-2 md:px-3">
                 <label for="quality" class="text-sm text-theme-muted">Quality</label>
                 <input data-quality id="quality" type="range" min="1" max="100" value="80" class="range flex-1" />
@@ -41,9 +39,7 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
 
         <p data-support-warning hidden class="mt-4 px-5 py-3 border border-amber-500/30 rounded-2xl bg-amber-500/10 text-sm text-amber-600 light:text-amber-700">Your browser is too old to convert images to WebP. Please update it, or use a recent version of Chrome, Edge, Firefox or Safari.</p>
 
-        {# results #}
         <div data-results hidden class="mt-10">
-            {# main action, the per-image downloads below stay secondary; sticks to the top while scrolling the list #}
             <div class="sticky top-3 z-20 rounded-3xl bg-theme-bg/85 shadow-lg shadow-theme-accent/10 backdrop-blur-xl">
                 <div class="flex flex-col gap-4 p-4 md:p-5 border border-theme-accent/30 rounded-3xl bg-theme-accent/5 sm:flex-row sm:items-center sm:justify-between">
                     <p data-summary class="text-sm text-theme-muted" aria-live="polite"></p>

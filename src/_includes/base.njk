@@ -13,7 +13,6 @@
     {%- endif %}
     <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
 
-    {# link previews (Messenger, Slack, WhatsApp, X...), banner source is tools/og-image.html #}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="{{ site.name }}" />
     <meta property="og:title" content="{{ title }}" />
@@ -31,10 +30,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@200..800&family=DM+Sans:wght@100..1000&display=swap" />
 
     <script>
-        // before paint, avoids a theme flash
         try {
             const saved = localStorage.getItem("theme");
-            // dark unless the visitor picked light with the toggle
             document.documentElement.dataset.theme = saved === "light" ? "light" : "dark";
         } catch {
             document.documentElement.dataset.theme = "dark";

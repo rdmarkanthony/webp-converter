@@ -1,5 +1,4 @@
 <!doctype html>
-<!-- link preview banner, render with: pnpm og -->
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -25,7 +24,6 @@
             color: var(--text);
             font-family: "DM Sans", sans-serif;
         }
-        /* same pixel tiles as the site background */
         .tiles {
             position: absolute;
             inset: 0;
@@ -38,7 +36,6 @@
             border-radius: 22%;
             background: var(--accent);
         }
-        /* keep the text side calm */
         .shade {
             position: absolute;
             inset: 0;
@@ -106,7 +103,6 @@
     </div>
 
     <script>
-        // deterministic noise so every render matches
         const hash = (x, y) => {
             const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
             return n - Math.floor(n);

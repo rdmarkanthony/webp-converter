@@ -4,7 +4,6 @@
 
 @custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
 
-/* dark is the default, light overrides the same tokens below (matches anthony-portfolio) */
 @theme {
     --breakpoint-xxs: 0px;
     --breakpoint-xs: 320px;
@@ -21,10 +20,8 @@
     --color-theme-line: #2a2a30;
     --color-theme-text: #f2f1ec;
     --color-theme-muted: #8d8d96;
-    /* light uses a deeper blue, see below */
     --color-theme-accent: #5b8fe0;
     --color-theme-accent-hover: #80aaee;
-    /* text on top of the accent */
     --color-theme-accent-ink: #0c0c0e;
 
     --font-sans: "DM Sans", Arial, Helvetica, sans-serif;
@@ -38,7 +35,6 @@
         color-scheme: dark;
     }
 
-    /* white and blue */
     :root[data-theme="light"] {
         --color-theme-bg: #ffffff;
         --color-theme-surface: #ffffff;
@@ -78,7 +74,6 @@
     margin-right: auto;
 }
 
-/* pill buttons, same as the portfolio's buttonClasses() */
 @utility btn {
     @apply relative inline-flex items-center justify-center gap-2 h-12 px-6 rounded-full font-medium text-base cursor-pointer outline-none transition-[background-color,border-color,color,opacity] duration-300 focus-visible:ring-2 focus-visible:ring-theme-accent disabled:opacity-40 disabled:cursor-not-allowed;
 }
@@ -91,7 +86,6 @@
     @apply border border-theme-line text-theme-text hover:border-theme-accent hover:text-theme-accent;
 }
 
-/* range slider in the accent colour */
 .range {
     @apply w-full h-1.5 appearance-none rounded-full bg-theme-line cursor-pointer outline-none;
     background-image: linear-gradient(var(--color-theme-accent), var(--color-theme-accent));
