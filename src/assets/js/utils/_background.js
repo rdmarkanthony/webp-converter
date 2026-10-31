@@ -6,6 +6,7 @@ const MAX_PIXEL_RATIO = 1.5;
 const THEME_FADE = 400;
 const FOLLOW = 0.08;
 const MAX_QUIET = 6;
+const SWEEP_SPEED = 0.12;
 
 const vertexShader = /* glsl */ `
 void main() {
@@ -19,6 +20,7 @@ const fragmentShader = /* glsl */ `
 uniform vec2 uResolution;
 uniform float uPixelRatio;
 uniform float uTime;
+uniform float uFlow;
 uniform float uCell;
 uniform vec2 uPointer;
 uniform float uPointerOn;
@@ -72,6 +74,12 @@ void main() {
     float flow = noise(id * 0.11 + vec2(uTime * 0.05, -uTime * 0.035));
     flow = smoothstep(0.45, 0.95, flow + (hash(id) - 0.5) * 0.25);
 
+    float bend = (noise(vec2(id.y * 0.12, uTime * 0.2)) - 0.5) * 140.0;
+    float along = center.x + center.y * 0.35 + bend;
+    float span = uResolution.x + uResolution.y * 0.35 + 400.0;
+    float behind = mod(fract(uFlow) * span - along, span);
+    float sweep = smoothstep(0.0, 80.0, behind) * exp(-behind / 280.0) * mix(0.5, 1.0, hash(id + 7.0));
+
     float near = exp(-pow(distance(center, uPointer) / 160.0, 2.0)) * uPointerOn;
 
     float fromMiddle = distance(center, uResolution * vec2(0.5, 0.45));
@@ -80,9 +88,10 @@ void main() {
     float calm = 1.0 - quietness(center) * 0.85;
     near *= calm;
     ripple *= calm;
+    sweep *= calm;
     flow *= mix(1.0, calm, 0.5);
 
-    float lit = clamp(flow * 0.55 + near * 0.6 + ripple * 0.8, 0.0, 1.0);
+    float lit = clamp(flow * 0.55 + near * 0.6 + ripple * 0.8 + sweep * 0.7, 0.0, 1.0);
 
     float size = mix(0.12, 0.36, lit);
     float edge = 1.0 / uCell;
@@ -141,6 +150,7 @@ export class _background {
             uResolution: { value: new Vector2(1, 1) },
             uPixelRatio: { value: 1 },
             uTime: { value: 0 },
+            uFlow: { value: 0 },
             uCell: { value: CELL.desktop },
             uPointer: { value: new Vector2(-1000, -1000) },
             uPointerOn: { value: 0 },
@@ -210,7 +220,8 @@ export class _background {
         requestAnimationFrame((time) => this.loop(time));
         if (document.hidden || this.reducedMotion.matches) return;
 
-        const k = 1 - Math.pow(1 - FOLLOW, (now - this.last) / (1000 / 60));
+        const dt = (now - this.last) / 1000;
+        const k = 1 - Math.pow(1 - FOLLOW, dt * 60);
         this.last = now;
 
         const { pointer, energy } = this;
@@ -220,6 +231,7 @@ export class _background {
         energy.value += (energy.target - energy.value) * k * 0.5;
 
         this.uniforms.uTime.value = (now - this.start) / 1000;
+        this.uniforms.uFlow.value += Math.min(dt, 0.1) * SWEEP_SPEED;
         this.uniforms.uPointer.value.set(pointer.x, pointer.y);
         this.uniforms.uPointerOn.value = pointer.on;
         this.uniforms.uEnergy.value = energy.value;
