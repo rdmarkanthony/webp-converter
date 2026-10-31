@@ -47,7 +47,7 @@
     <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <link rel="stylesheet" href="/assets/css/style.css" media="all" />
+    <link rel="stylesheet" href="/assets/css/style.css?v={{ site.version }}" media="all" />
     {% block styles -%}{%- endblock %}
 
     {% block headerscript -%}{%- endblock %}
@@ -61,7 +61,7 @@
     {% block popup -%}{%- endblock %}
     {{ footer() }}
 
-    <script src="/assets/js/script.js" type="module"></script>
+    <script src="/assets/js/script.js?v={{ site.version }}" type="module"></script>
     {% block footerscript -%}{%- endblock %}
 </body>
 </html>
