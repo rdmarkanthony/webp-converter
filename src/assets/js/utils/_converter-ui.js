@@ -20,6 +20,7 @@ export class _converterUI {
             list: root.querySelector("[data-list]"),
             clear: root.querySelector("[data-clear]"),
             downloadAll: root.querySelector("[data-download-all]"),
+            downloadAllLabel: root.querySelector("[data-download-all-label]"),
             template: root.querySelector("[data-item-template]"),
         };
 
@@ -199,13 +200,17 @@ export class _converterUI {
 
         this.el.results.hidden = this.items.length === 0;
         this.el.downloadAll.disabled = this.busy || done.length === 0;
+        this.el.downloadAllLabel.textContent = this.busy ? "Converting…" : done.length > 1 ? `Download all (${done.length})` : "Download";
 
         const before = done.reduce((sum, item) => sum + item.file.size, 0);
         const after = done.reduce((sum, item) => sum + item.blob.size, 0);
         const saved = before ? Math.round((1 - after / before) * 100) : 0;
 
-        this.el.summary.textContent =
-            `${done.length} of ${this.items.length} converted` + (done.length ? ` · ${_webp.formatBytes(before)} → ${_webp.formatBytes(after)} (${saved >= 0 ? `${saved}% smaller` : `${-saved}% larger`})` : "");
+        // only numbers go into the markup, file names never do
+        const progress = `${done.length} of ${this.items.length} converted`;
+        this.el.summary.innerHTML = done.length
+            ? `<span class="block font-display font-semibold text-xl text-theme-text">${_webp.formatBytes(before)} → ${_webp.formatBytes(after)}</span>${progress} · <span class="font-medium text-theme-accent">${saved >= 0 ? `${saved}% smaller` : `${-saved}% larger`}</span>`
+            : progress;
     }
 
     async downloadAll() {
