@@ -2,7 +2,6 @@ import { _event } from "./utils/_event";
 import { _converterUI } from "./utils/_converter-ui";
 import { _background } from "./utils/_background";
 
-// matches --color-theme-bg in style.css
 const THEME_COLORS = { dark: "#0c0c0e", light: "#ffffff" };
 
 class _webpConverterApp {
@@ -25,7 +24,6 @@ class _webpConverterApp {
     }
 
     init() {
-        // for resize
         _event.resize(() => this.resize());
 
         document.querySelectorAll("[data-converter]").forEach((root) => new _converterUI(root));
@@ -35,7 +33,6 @@ class _webpConverterApp {
         if (this.debug) console.log("_webpConverterApp", this);
     }
 
-    // the inline script in base.njk reads the same key before paint
     toggleTheme() {
         const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
         document.documentElement.dataset.theme = next;
@@ -43,9 +40,7 @@ class _webpConverterApp {
 
         try {
             localStorage.setItem("theme", next);
-        } catch (e) {
-            // storage blocked, still switches for this visit
-        }
+        } catch (e) {}
     }
 
     resize() {

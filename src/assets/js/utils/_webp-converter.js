@@ -2,11 +2,9 @@ import { zipSync } from "fflate";
 import encodeWasm, { init as initWasm } from "@jsquash/webp/encode";
 
 const WEBP = "image/webp";
-// copied there from node_modules by eleventy.config.js
 const WASM_DIR = "/assets/wasm/";
 
 export const _webp = {
-    // true if the browser can encode webp from a canvas (Safari, and so every iOS browser, can't)
     isNativeSupported() {
         this.native ??= (() => {
             const canvas = document.createElement("canvas");
@@ -16,35 +14,28 @@ export const _webp = {
         return this.native;
     },
 
-    // true if either the canvas or the wasm fallback can do it
     isSupported() {
         return this.isNativeSupported() || typeof WebAssembly === "object";
     },
 
-    // libwebp compiled to wasm, only downloaded the first time it's needed
     encodeWithWasm(imageData, quality) {
         this.wasm ??= initWasm({ locateFile: (path) => WASM_DIR + path });
         return this.wasm.then(() => encodeWasm(imageData, { quality: Math.round(quality * 100) }));
     },
 
-    // iPhone photos; browsers often leave file.type empty for these
     isHeic(file) {
         return /^image\/hei[cf]/.test(file.type) || /\.hei[cf]$/i.test(file.name);
     },
 
-    // what the list accepts: anything the browser calls an image, plus heic so it can explain itself
     isImage(file) {
         return file.type.startsWith("image/") || this.isHeic(file);
     },
 
     async decode(file) {
-        // createImageBitmap honours EXIF orientation but can't read SVG in every browser
         if (file.type !== "image/svg+xml" && "createImageBitmap" in window) {
             try {
                 return await createImageBitmap(file, { imageOrientation: "from-image" });
-            } catch (e) {
-                // fall through to <img>
-            }
+            } catch (e) {}
         }
 
         const url = URL.createObjectURL(file);
@@ -55,7 +46,6 @@ export const _webp = {
             await img.decode();
             return img;
         } catch (e) {
-            // only Safari can read heic
             if (this.isHeic(file)) throw new Error("This browser can't open iPhone HEIC photos. Try Safari, or save the photo as JPG first.");
             throw new Error("Couldn't read this image. The file may be damaged or in an unsupported format.");
         } finally {
@@ -111,10 +101,8 @@ export const _webp = {
     async zip(entries) {
         const files = {};
         for (const { name, blob } of entries) {
-            // de-duplicate names: photo.webp, photo-1.webp, ...
             let unique = name;
             for (let n = 1; unique in files; n++) unique = name.replace(/(\.[^./\\]*)?$/, `-${n}$1`);
-            // images are already compressed, so store without deflate
             files[unique] = [new Uint8Array(await blob.arrayBuffer()), { level: 0 }];
         }
         return new Blob([zipSync(files)], { type: "application/zip" });

@@ -1,13 +1,10 @@
 import { Mesh, OrthographicCamera, PlaneGeometry, Scene, ShaderMaterial, Vector2, Vector3, Vector4, WebGLRenderer } from "three";
 
-// pixel grid background: tiles breathe with noise, light up around the pointer and ripple while converting
 const CELL = { mobile: 22, desktop: 30 };
 const STRENGTH = { dark: 1, light: 1.3 };
 const MAX_PIXEL_RATIO = 1.5;
 const THEME_FADE = 400;
-// how quickly the glow catches up with the pointer, per frame at 60fps
 const FOLLOW = 0.08;
-// text marked with data-bg-quiet keeps the glow down behind it
 const MAX_QUIET = 6;
 
 const vertexShader = /* glsl */ `
@@ -19,7 +16,6 @@ void main() {
 const fragmentShader = /* glsl */ `
 #define MAX_QUIET ${MAX_QUIET}
 
-// everything in css pixels with y down, like the dom
 uniform vec2 uResolution;
 uniform float uPixelRatio;
 uniform float uTime;
@@ -30,10 +26,8 @@ uniform float uEnergy;
 uniform float uStrength;
 uniform vec3 uBg;
 uniform vec3 uAccent;
-// x, y, width, height in css pixels, unused slots have no size
 uniform vec4 uQuiet[MAX_QUIET];
 
-// hash without sine, https://www.shadertoy.com/view/4djSRW (Dave Hoskins, MIT license)
 float hash(vec2 p) {
     vec3 p3 = fract(vec3(p.xyx) * 0.1031);
     p3 += dot(p3, p3.yzx + 33.33);
@@ -57,7 +51,6 @@ float box(vec2 p, vec2 halfSize) {
     return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0);
 }
 
-// 1 inside a quiet zone, easing to 0 over 48px around it
 float quietness(vec2 p) {
     float quiet = 0.0;
     for (int i = 0; i < MAX_QUIET; i++) {
@@ -76,18 +69,14 @@ void main() {
     vec2 local = fract(p / uCell) - 0.5;
     vec2 center = (id + 0.5) * uCell;
 
-    // slow drifting noise decides which tiles are lit
     float flow = noise(id * 0.11 + vec2(uTime * 0.05, -uTime * 0.035));
     flow = smoothstep(0.45, 0.95, flow + (hash(id) - 0.5) * 0.25);
 
-    // pointer glow
     float near = exp(-pow(distance(center, uPointer) / 160.0, 2.0)) * uPointerOn;
 
-    // ripple out from the middle while converting
     float fromMiddle = distance(center, uResolution * vec2(0.5, 0.45));
     float ripple = pow(0.5 + 0.5 * sin(fromMiddle * 0.018 - uTime * 4.0), 6.0) * uEnergy;
 
-    // behind text the glow and ripple mostly drop out and the drift calms down
     float calm = 1.0 - quietness(center) * 0.85;
     near *= calm;
     ripple *= calm;
@@ -95,28 +84,23 @@ void main() {
 
     float lit = clamp(flow * 0.55 + near * 0.6 + ripple * 0.8, 0.0, 1.0);
 
-    // tile grows with how lit it is
     float size = mix(0.12, 0.36, lit);
     float edge = 1.0 / uCell;
     float tile = 1.0 - smoothstep(-edge, edge, roundedBox(local, size, 0.12));
 
-    // fade the grid out towards the bottom so the content stays calm
     float fade = mix(1.0, 0.35, smoothstep(0.0, 1.0, p.y / uResolution.y));
 
     float amount = tile * (0.035 + lit * 0.3) * fade * uStrength;
     vec3 color = mix(uBg, uAccent, amount);
 
-    // soft wash of accent behind the pointer
     color = mix(color, uAccent, near * 0.035 * uStrength);
 
     gl_FragColor = vec4(color, 1.0);
 }
 `;
 
-// srgb hex -> 0..1 vec3, unmanaged so it matches css
 function hexToVec3(hex) {
     let digits = hex.trim().slice(1);
-    // the css minifier shortens #ffffff to #fff
     if (digits.length === 3) digits = digits.replace(/./g, "$&$&");
     const value = parseInt(digits, 16);
     return new Vector3(((value >> 16) & 255) / 255, ((value >> 8) & 255) / 255, (value & 255) / 255);
@@ -139,7 +123,6 @@ export class _background {
         try {
             this.renderer = new WebGLRenderer({ canvas, powerPreference: "low-power" });
         } catch (e) {
-            // no webgl, the plain page background stays
             return;
         }
 
@@ -184,7 +167,6 @@ export class _background {
         }
 
         window.addEventListener("converter:busy", (e) => (this.energy.target = e.detail ? 1 : 0));
-        // the loop keeps quiet zones in step with scrolling, reduced motion has no loop
         window.addEventListener("scroll", () => this.reducedMotion.matches && this.render(), { passive: true });
 
         this.resize();
@@ -204,7 +186,6 @@ export class _background {
         this.uniforms.uPixelRatio.value = pixelRatio;
         this.uniforms.uCell.value = width < 768 ? CELL.mobile : CELL.desktop;
 
-        // reduced motion only draws on resize and theme change
         if (this.reducedMotion.matches) this.render();
     }
 
@@ -229,7 +210,6 @@ export class _background {
         requestAnimationFrame((time) => this.loop(time));
         if (document.hidden || this.reducedMotion.matches) return;
 
-        // frame-rate independent easing
         const k = 1 - Math.pow(1 - FOLLOW, (now - this.last) / (1000 / 60));
         this.last = now;
 
@@ -246,7 +226,6 @@ export class _background {
         this.render();
     }
 
-    // measures the text itself, not the full-width block around it
     updateQuiet() {
         this.uniforms.uQuiet.value.forEach((rect, i) => {
             const el = this.quiet[i];
