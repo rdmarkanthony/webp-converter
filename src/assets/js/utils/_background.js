@@ -86,7 +86,10 @@ void main() {
 
 // srgb hex -> 0..1 vec3, unmanaged so it matches css
 function hexToVec3(hex) {
-    const value = parseInt(hex.trim().slice(1), 16);
+    let digits = hex.trim().slice(1);
+    // the css minifier shortens #ffffff to #fff
+    if (digits.length === 3) digits = digits.replace(/./g, "$&$&");
+    const value = parseInt(digits, 16);
     return new Vector3(((value >> 16) & 255) / 255, ((value >> 8) & 255) / 255, (value & 255) / 255);
 }
 
