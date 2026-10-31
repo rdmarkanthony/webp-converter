@@ -31,19 +31,11 @@ pageDescription: Convert JPG, PNG, GIF, BMP, AVIF and SVG images to WebP for fre
                 <input data-file-input type="file" accept="image/*" multiple class="sr-only" />
             </label>
 
-            {# settings + convert #}
-            <div class="flex flex-col gap-5 px-2 pt-5 pb-1 md:flex-row md:items-center md:gap-8 md:px-3">
-                <div class="flex-1">
-                    <label for="quality" class="flex items-center justify-between text-sm">
-                        <span class="text-theme-muted">Quality</span>
-                        <output data-quality-output for="quality" class="font-medium tabular-nums">80</output>
-                    </label>
-                    <input data-quality id="quality" type="range" min="1" max="100" value="80" class="range mt-3" />
-                </div>
-                <button data-convert type="button" class="btn btn-primary md:min-w-44" disabled>
-                    <span data-convert-label>Convert</span>
-                    <svg class="w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                </button>
+            {# settings, images convert as soon as they're added or the quality changes #}
+            <div class="flex items-center gap-4 px-2 pt-5 pb-2 md:px-3">
+                <label for="quality" class="text-sm text-theme-muted">Quality</label>
+                <input data-quality id="quality" type="range" min="1" max="100" value="80" class="range flex-1" />
+                <output data-quality-output for="quality" class="w-8 text-right text-sm font-medium tabular-nums">80</output>
             </div>
         </div>
 

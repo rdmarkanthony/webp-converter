@@ -1,7 +1,7 @@
 import { _webp } from "./_webp-converter";
 
 // item.status: ready -> converting -> done | error, done -> stale when the quality changes
-const NEEDS_CONVERT = ["ready", "stale", "error"];
+const NEEDS_CONVERT = ["ready", "stale"];
 // stale items still have their previous result to download
 const HAS_RESULT = ["done", "stale"];
 
@@ -15,8 +15,6 @@ export class _converterUI {
             warning: root.querySelector("[data-support-warning]"),
             quality: root.querySelector("[data-quality]"),
             qualityOutput: root.querySelector("[data-quality-output]"),
-            convert: root.querySelector("[data-convert]"),
-            convertLabel: root.querySelector("[data-convert-label]"),
             results: root.querySelector("[data-results]"),
             summary: root.querySelector("[data-summary]"),
             list: root.querySelector("[data-list]"),
@@ -74,15 +72,18 @@ export class _converterUI {
             if (e.clipboardData?.files.length) this.add(e.clipboardData.files);
         });
 
-        // quality only takes effect on the next convert
+        // re-convert everything once the user stops dragging the slider
+        let timer;
         this.el.quality.addEventListener("input", () => {
             this.el.qualityOutput.value = this.el.quality.value;
             this.el.quality.style.setProperty("--fill", `${this.el.quality.value}%`);
-            this.items.filter((item) => item.status === "done").forEach((item) => this.setStatus(item, "stale"));
-            this.render();
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                this.items.filter((item) => item.status === "done").forEach((item) => this.setStatus(item, "stale"));
+                this.convert();
+            }, 300);
         });
 
-        this.el.convert.addEventListener("click", () => this.convert());
         this.el.clear.addEventListener("click", () => [...this.items].forEach((item) => this.remove(item)));
         this.el.downloadAll.addEventListener("click", () => this.downloadAll());
 
@@ -115,6 +116,7 @@ export class _converterUI {
             this.setStatus(item, "ready");
         });
         this.render();
+        this.convert();
     }
 
     remove(item) {
@@ -126,19 +128,16 @@ export class _converterUI {
         this.render();
     }
 
-    // one at a time to keep memory down with large batches
+    // one at a time to keep memory down with large batches, picks up items added or changed while running
     async convert() {
         if (this.busy) return;
-        const queue = this.items.filter((item) => NEEDS_CONVERT.includes(item.status));
-        if (!queue.length) return;
 
         this.busy = true;
         window.dispatchEvent(new CustomEvent("converter:busy", { detail: true }));
-        this.render();
 
-        const quality = this.quality;
-        for (const item of queue) {
-            if (item.removed) continue;
+        let item;
+        while ((item = this.items.find((i) => NEEDS_CONVERT.includes(i.status)))) {
+            const quality = this.quality;
             this.setStatus(item, "converting");
             this.render();
             try {
@@ -146,7 +145,8 @@ export class _converterUI {
                 if (item.removed) continue;
                 if (item.url) URL.revokeObjectURL(item.url);
                 Object.assign(item, { blob, url: URL.createObjectURL(blob), width, height });
-                this.setStatus(item, "done");
+                // the slider moved while this one was converting
+                this.setStatus(item, quality === this.quality ? "done" : "stale");
             } catch (err) {
                 item.error = err.message || "Conversion failed";
                 this.setStatus(item, "error");
@@ -169,10 +169,10 @@ export class _converterUI {
         meta.classList.toggle("text-red-400", status === "error");
         badge.classList.toggle("sm:inline-block", HAS_RESULT.includes(status));
 
-        if (status === "ready") meta.textContent = `${size} · Ready to convert`;
+        if (status === "ready") meta.textContent = `${size} · Waiting…`;
         if (status === "converting") meta.textContent = `${size} · Converting…`;
         if (status === "error") meta.textContent = item.error;
-        if (status === "stale") meta.textContent = `${size} → ${_webp.formatBytes(item.blob.size)} · Quality changed, convert again`;
+        if (status === "stale") meta.textContent = `${size} → ${_webp.formatBytes(item.blob.size)} · Updating…`;
 
         if (status === "done") {
             const diff = Math.round(((item.blob.size - item.file.size) / item.file.size) * 100);
@@ -196,21 +196,16 @@ export class _converterUI {
 
     render() {
         const done = this.items.filter((item) => HAS_RESULT.includes(item.status));
-        const stale = this.items.some((item) => item.status === "stale");
-        const pending = this.items.filter((item) => NEEDS_CONVERT.includes(item.status));
 
         this.el.results.hidden = this.items.length === 0;
         this.el.downloadAll.disabled = this.busy || done.length === 0;
-        this.el.clear.disabled = this.busy;
-        this.el.convert.disabled = this.busy || pending.length === 0;
-        this.el.convertLabel.textContent = this.busy ? "Converting…" : pending.length > 1 ? `Convert ${pending.length} images` : "Convert";
 
         const before = done.reduce((sum, item) => sum + item.file.size, 0);
         const after = done.reduce((sum, item) => sum + item.blob.size, 0);
         const saved = before ? Math.round((1 - after / before) * 100) : 0;
 
         this.el.summary.textContent =
-            `${done.length} of ${this.items.length} converted` + (done.length ? ` · ${_webp.formatBytes(before)} → ${_webp.formatBytes(after)} (${saved >= 0 ? `${saved}% smaller` : `${-saved}% larger`})` : "") + (stale ? " · quality changed" : "");
+            `${done.length} of ${this.items.length} converted` + (done.length ? ` · ${_webp.formatBytes(before)} → ${_webp.formatBytes(after)} (${saved >= 0 ? `${saved}% smaller` : `${-saved}% larger`})` : "");
     }
 
     async downloadAll() {
