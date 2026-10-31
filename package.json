@@ -23,6 +23,7 @@
     "packageManager": "pnpm@10.28.2",
     "dependencies": {
         "@11ty/eleventy": "^3.1.2",
+        "@jsquash/webp": "^1.5.0",
         "fflate": "^0.8.3",
         "three": "^0.187.0"
     },

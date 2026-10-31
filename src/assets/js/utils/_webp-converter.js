@@ -1,13 +1,30 @@
 import { zipSync } from "fflate";
+import encodeWasm, { init as initWasm } from "@jsquash/webp/encode";
 
 const WEBP = "image/webp";
+// copied there from node_modules by eleventy.config.js
+const WASM_DIR = "/assets/wasm/";
 
 export const _webp = {
-    // true if the browser can encode webp from a canvas
+    // true if the browser can encode webp from a canvas (Safari, and so every iOS browser, can't)
+    isNativeSupported() {
+        this.native ??= (() => {
+            const canvas = document.createElement("canvas");
+            canvas.width = canvas.height = 1;
+            return canvas.toDataURL(WEBP).startsWith(`data:${WEBP}`);
+        })();
+        return this.native;
+    },
+
+    // true if either the canvas or the wasm fallback can do it
     isSupported() {
-        const canvas = document.createElement("canvas");
-        canvas.width = canvas.height = 1;
-        return canvas.toDataURL(WEBP).startsWith(`data:${WEBP}`);
+        return this.isNativeSupported() || typeof WebAssembly === "object";
+    },
+
+    // libwebp compiled to wasm, only downloaded the first time it's needed
+    encodeWithWasm(imageData, quality) {
+        this.wasm ??= initWasm({ locateFile: (path) => WASM_DIR + path });
+        return this.wasm.then(() => encodeWasm(imageData, { quality: Math.round(quality * 100) }));
     },
 
     async decode(file) {
@@ -41,13 +58,22 @@ export const _webp = {
         const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
-        const ctx = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d", { willReadFrequently: !this.isNativeSupported() });
         ctx.imageSmoothingQuality = "high";
         ctx.drawImage(source, 0, 0, width, height);
         source.close?.();
 
-        const blob = await new Promise((resolve) => canvas.toBlob(resolve, WEBP, quality));
-        canvas.width = canvas.height = 0;
+        let blob;
+        try {
+            if (this.isNativeSupported()) {
+                blob = await new Promise((resolve) => canvas.toBlob(resolve, WEBP, quality));
+            } else {
+                const buffer = await this.encodeWithWasm(ctx.getImageData(0, 0, width, height), quality);
+                blob = new Blob([buffer], { type: WEBP });
+            }
+        } finally {
+            canvas.width = canvas.height = 0;
+        }
 
         if (!blob || blob.type !== WEBP) throw new Error("WebP encoding is not supported in this browser");
         return { blob, width, height };
