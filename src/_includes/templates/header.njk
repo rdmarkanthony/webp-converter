@@ -1,10 +1,20 @@
 {% macro header(props) %}
-<header class="header-content border-b border-slate-200 bg-white px-4 py-4">
-    <div class="container mx-auto max-w-4xl flex items-center gap-2">
-        <a href="/" class="flex items-center gap-2 font-semibold text-slate-900">
-            <span class="grid size-8 place-items-center rounded-lg bg-indigo-600 text-xs font-bold text-white">W</span>
-            WebP Converter
+<header class="header-content">
+    <div class="container-1 flex items-center justify-between gap-6 h-20">
+        <a href="/" class="font-display font-semibold text-xl md:text-2xl tracking-tight">
+            webp<span class="text-theme-accent">.</span>
         </a>
+
+        <button data-theme-toggle type="button" class="flex items-center justify-center size-11 border border-theme-line rounded-full bg-theme-surface/70 backdrop-blur-md cursor-pointer transition-colors duration-300 hover:border-theme-text" aria-label="Switch theme">
+            {# sun shows in dark, moon in light #}
+            <svg class="w-5 light:hidden" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2" />
+                <path d="M12 2V4M12 20V22M4.93 4.93L6.34 6.34M17.66 17.66L19.07 19.07M2 12H4M20 12H22M4.93 19.07L6.34 17.66M17.66 6.34L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <svg class="w-5 hidden light:block" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </button>
     </div>
 </header>
 {% endmacro %}

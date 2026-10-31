@@ -17,6 +17,9 @@ export default function (eleventyConfig) {
 
     // port the assets
     eleventyConfig.addPassthroughCopy("src/assets/img");
+    eleventyConfig.addPassthroughCopy("src/assets/favicon");
+    eleventyConfig.addPassthroughCopy("src/favicon.ico");
+    eleventyConfig.addPassthroughCopy("src/site.webmanifest");
     // eleventyConfig.addPassthroughCopy("src/assets/video");
     // eleventyConfig.addPassthroughCopy("src/assets/data");
 
